@@ -2,7 +2,7 @@
 #include "clargs.h"
 #include <stdio.h>
 #include <SDL.h>
-#include <unistd.h>
+
 
 
 int main(int argc, char *argv[])
@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
 
     if (window == NULL) {
         printf("Could not create window: %s\n", SDL_GetError());
+        SDL_Quit();
         return 1;
     }
 
@@ -38,6 +39,8 @@ int main(int argc, char *argv[])
 
     if (renderer == NULL) {
         printf("Could not create renderer: %s\n", SDL_GetError());
+        SDL_DestroyWindow(window);
+        SDL_Quit();
         return 1;
     }
 
@@ -50,6 +53,9 @@ int main(int argc, char *argv[])
 
     if (texture == NULL) {
         printf("Could not create texture: %s\n", SDL_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
         return 1;
     }
 

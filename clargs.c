@@ -16,5 +16,4 @@ static void init(Args* args)
 void parseClArguments(Args* args)
 {
     init(args);
-    printf("It works\n");
 };

@@ -8,7 +8,7 @@ static void init(Args* args)
 
     args->height=600;
     args->width=800;
-    args->threads=8;
+    args->threads=2;
     args->iterations=8000;
 
 };

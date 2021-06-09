@@ -20,7 +20,7 @@ int rgb(int red,int green, int blue) {
 	return (red << 16) | (green << 8) | (blue);
 }
 
-void render_chunk(SDL_Rect *rect,unsigned* px,unsigned width,unsigned height)
+static void render_chunk(SDL_Rect *rect,unsigned* px,unsigned width,unsigned height)
 {
     SDL_Event Event;
     for (unsigned y=0; y<rect->h; ++y)
@@ -68,5 +68,13 @@ void render_chunk(SDL_Rect *rect,unsigned* px,unsigned width,unsigned height)
         }
 }
 
+void *render(void *arg)
+{
+    struct ThreadArgs *targs = (struct ThreadArgs*)arg;
+    
+    render_chunk(&targs->rect,targs->px,targs->width,targs->height);
 
+    return NULL;
+
+};
 

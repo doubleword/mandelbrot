@@ -5,16 +5,15 @@
 #include <stdlib.h>
 #include "rendering.h"
 #include <SDL.h>
+#include <pthread.h>
 
 unsigned MAX_ITERATIONS = 8000;
-static const long double zoom = 2.0;
-
 long double x_lower_bound = -2.0;
 long double x_upper_bound = 2.0;
 long double y_lower_bound = -2.0;
 long double y_upper_bound = 2.0;
 
-
+static const long double zoom = 2.0;
 
 int main(int argc, char *argv[])
 {
@@ -80,6 +79,43 @@ int main(int argc, char *argv[])
         goto clean_up;    
     }
 
+    pthread_t *tids= (pthread_t*) malloc(args.threads*sizeof(pthread_t));
+    if (tids==NULL)
+    {
+        puts("Failed to allocate memory");
+        free(px);
+        goto clean_up;    
+    }
+
+    struct ThreadArgs *targs= (struct ThreadArgs*) malloc(args.threads*sizeof(struct ThreadArgs));
+    if (targs==NULL)
+    {
+        puts("Failed to allocate memory");
+        free(px);
+        free(tids);
+        goto clean_up;    
+    }
+
+
+    for (unsigned i=0;i<args.threads;++i)
+    {
+        targs[i].rect.w=args.width;
+
+        if (i==args.threads-1 && args.height%args.threads)
+            targs[i].rect.h=args.height/args.threads+args.height%args.threads;
+        else
+            targs[i].rect.h=args.height/args.threads;
+
+        targs[i].rect.x=0;
+        targs[i].rect.y=args.height/args.threads*i;
+        targs[i].px=px;
+        targs[i].width=args.width;
+        targs[i].height=args.height;
+
+    }
+
+
+
     while (running)
     {
         while(SDL_PollEvent(&Event))
@@ -92,6 +128,8 @@ int main(int argc, char *argv[])
                 
                 case SDL_MOUSEBUTTONDOWN:
                 {
+                    puts("Moving the zoom point!");
+
                     int mouse_x, mouse_y;
                     if (SDL_GetMouseState(&mouse_x, &mouse_y)&SDL_BUTTON(SDL_BUTTON_LEFT))
                     {
@@ -104,7 +142,7 @@ int main(int argc, char *argv[])
                         y_upper_bound = mp_mouse_y + y_axis_bias;
                         y_lower_bound = mp_mouse_y - y_axis_bias;
                         draw = true;
-                        puts("Moving the zoom point!");
+                        
                         
                     }
 
@@ -117,21 +155,23 @@ int main(int argc, char *argv[])
                     switch(Event.key.keysym.sym)
                     {
                         case SDLK_ESCAPE:
+                            puts("Reset!");
                             draw = true;
                             x_lower_bound = -2.0;
                             x_upper_bound = 2.0;
                             y_lower_bound = -2.0;
                             y_upper_bound = 2.0;
-                            puts("Reset!");
                             break;
 
                         case SDLK_r:
-                            draw = true;
                             puts("Redrawing!");
+                            draw = true;
                             break;
 
                         case SDLK_z:
                         {
+                            puts("Zooming in!");
+
                             draw = true;
                             long double center_x = (x_lower_bound + x_upper_bound) / 2;
                             long double center_y = (y_lower_bound + y_upper_bound) / 2;
@@ -149,7 +189,6 @@ int main(int argc, char *argv[])
                             y_upper_bound = center_y + y_axis_bias;
                             y_lower_bound = center_y - y_axis_bias;
 
-                            puts("Zooming in!");
                             break;
                         }
                     }
@@ -164,18 +203,12 @@ int main(int argc, char *argv[])
         {
             puts("Drawing");
 
-            SDL_Rect chunk=
-            {
-            .x=0,
-            .y=0,
-            .w=args.width,
-            .h=args.height
-            };
+            for (int i=0;i<args.threads;++i)
+                pthread_create(tids+i,NULL,render,targs+i);
 
-            // TO DO: Make threaded rendering
-            render_chunk(&chunk,px,args.width,args.height);
-			
-            
+            for (int i=0;i<args.threads;++i)
+                pthread_join(tids[i],NULL);
+
             SDL_UpdateTexture(texture,NULL,px,sizeof(unsigned)*args.width);
 			SDL_RenderCopy(renderer, texture, NULL, NULL);
 			SDL_RenderPresent(renderer);
@@ -187,6 +220,8 @@ int main(int argc, char *argv[])
     }
 
     free(px);
+    free(tids);
+    free(targs);
 
 clean_up:
 

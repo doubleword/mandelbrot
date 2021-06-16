@@ -6,6 +6,7 @@
 #include "rendering.h"
 #include <SDL.h>
 #include <pthread.h>
+#include <time.h>
 
 unsigned MAX_ITERATIONS = 8000;
 long double x_lower_bound = -2.0;
@@ -191,6 +192,33 @@ int main(int argc, char *argv[])
 
                             break;
                         }
+                        case SDLK_s:
+                        {
+                            char filename[256];
+                            time_t t=time(NULL);
+
+                            if (t!=-1)
+                            {
+                                struct tm ct;
+                                gmtime_r(&t,&ct);
+                                strftime(filename,256,"raw_%Y-%m-%d_%H-%M-%S",&ct);
+                            }
+                            else
+                                strncpy(filename,"raw",4);
+
+                            FILE* bitmap=fopen(filename,"wb");
+                            if (bitmap==NULL)
+                            {
+                                perror("Couldn't open a file");
+                                break;
+                            }
+                            fwrite(px,sizeof(unsigned),args.width*args.height,bitmap);
+                            fclose(bitmap);
+                            printf("Saved raw bitmap in %s\n",filename);
+
+                            break;
+                        }
+
                     }
 
                     break;

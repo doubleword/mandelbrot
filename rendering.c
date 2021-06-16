@@ -47,9 +47,12 @@ static void render_chunk(SDL_Rect *rect,unsigned* px,unsigned width,unsigned hei
                 if (iters % 4000 == 0)
                     SDL_PollEvent(&Event);
 
-                int r,g,b;
-                if (iters==MAX_ITERATIONS)
-                    r=g=b=0;
+
+            }
+
+            int r,g,b;
+            if (iters==MAX_ITERATIONS)
+                r=g=b=0;
                 else
                 {
                     g = (iters / 4) % 256;
@@ -57,11 +60,7 @@ static void render_chunk(SDL_Rect *rect,unsigned* px,unsigned width,unsigned hei
 				    r = (g + b) / 2;
                 }
                 
-                px[(y + rect->y)*width + x + rect->x] = rgb(r, g, b);
-
-
-            }
-
+            px[(y + rect->y)*width + x + rect->x] = rgb(r, g, b);
 
 
             

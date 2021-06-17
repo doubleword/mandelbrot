@@ -218,6 +218,20 @@ int main(int argc, char *argv[])
 
                             break;
                         }
+                        case SDLK_i:
+                        {
+                            printf("Current amount of iterations: %lu\n",MAX_ITERATIONS);
+                            printf("Enter amount of iterations: ");
+                            if (scanf("%lu",&MAX_ITERATIONS)!=1)
+                            {
+                                puts("Wrong input!");
+                                int c;
+                                while ((c=getchar())!='\n' && c!=EOF);
+                            }
+                            printf("Amount of iterations is set to %lu\n",MAX_ITERATIONS);
+
+                            break;
+                        }
 
                     }
 

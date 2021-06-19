@@ -1,19 +1,47 @@
 #include "clargs.h"
+#include <stdlib.h>
 #include <stdio.h>
 
 
+const char *UsageStr=
+"Usage: %s width height threads\n\n"
+"width\t\tWidth of the windows in pixels\n"
+"height\t\tHeight of the windows in pixels\n"
+"threads\t\tAmount of threads to use for rendering\n";
 
-static void init(Args* args)
+
+
+void parseClArguments(Args* args,int argc,char *argv[])
 {
 
-    args->height=600;
-    args->width=800;
-    args->threads=2;
-    args->iterations=8000;
 
-};
+    if (argc<4)
+    {
+        printf(UsageStr,argv[0]);
+        exit(1);
+    }
 
-void parseClArguments(Args* args)
-{
-    init(args);
+    args->width=(unsigned) strtoul(argv[1],NULL,10);
+    if (!args->width)
+    {
+        puts("Invalid width value");
+        exit(1);
+    }
+
+    args->height=(unsigned) strtoul(argv[2],NULL,10);
+    if (!args->height)
+    {
+        puts("Invalid height value");
+        exit(1);
+    }
+
+    args->threads=(unsigned) strtoul(argv[3],NULL,10);
+    if (!args->threads)
+    {
+        puts("Invalid threads value");
+        exit(1);
+    }
+
+
+
 };

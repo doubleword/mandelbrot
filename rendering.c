@@ -45,7 +45,7 @@ static void render_chunk(SDL_Rect *rect,unsigned* px,unsigned width,unsigned hei
 
                 // window freezes if events aren't pooled for a long time
                 if (iters % 4000 == 0)
-                    SDL_PollEvent(&Event);
+                    while(SDL_PollEvent(&Event));
 
 
             }

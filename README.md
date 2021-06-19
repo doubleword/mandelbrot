@@ -35,10 +35,6 @@ pip install Pillow
 ## raw2png.py usage:
 ```
 usage: raw2png.py [-h] width height file
-raw2png.py: error: the following arguments are required: width, height, file
-
-C:\Users\infop\Desktop>python raw2png.py -h
-usage: raw2png.py [-h] width height file
 
 positional arguments:
   width       width of a bitmap

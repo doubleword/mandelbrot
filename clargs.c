@@ -5,9 +5,16 @@
 
 const char *UsageStr=
 "Usage: %s width height threads\n\n"
-"width\t\tWidth of the windows in pixels\n"
-"height\t\tHeight of the windows in pixels\n"
-"threads\t\tAmount of threads to use for rendering\n";
+"width\t\t\tWidth of the window in pixels\n"
+"height\t\t\tHeight of the window in pixels\n"
+"threads\t\t\tAmount of threads to use for rendering\n\n"
+"Controls:\n\n"
+"Left-click\t\tChange the zoom point\n"
+"Z\t\t\tZoom in\n"
+"R\t\t\tRedraw\n"
+"ESC\t\t\tReset\n"
+"S\t\t\tSave bitmap (can be converted in a png image with the raw2png.py script)\n"
+"I\t\t\tChange the amount of iterations used to decide whether a point lies in the set\n\n";
 
 
 

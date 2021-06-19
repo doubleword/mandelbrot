@@ -17,7 +17,7 @@ threads			Amount of threads to use for rendering
 
 Controls:
 
-Left-click	Change the zoom point
+Left-click	        Change the zoom point
 Z			Zoom in
 R			Redraw
 ESC			Reset
